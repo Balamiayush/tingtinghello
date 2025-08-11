@@ -2336,10 +2336,10 @@ p {
     z-index: 10000;
     background-color: #0000;
     width: 100%;
-    padding-top: 25px;
-    padding-bottom: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     position: sticky;
-    top: -50px
+    top: -10px
 }
 
 .body {
