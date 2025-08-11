@@ -2336,8 +2336,8 @@ p {
     z-index: 10000;
     background-color: #0000;
     width: 100%;
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 25px;
+    padding-bottom: 25px;
     position: sticky;
     top: -50px
 }
@@ -2539,7 +2539,7 @@ p {
     position: relative
 }
 #name1{
-    height: 180px;
+    height: 190px;
     overflow: hidden;
     line-height: 1.2em;
 }
@@ -2583,6 +2583,24 @@ p {
     padding-top: 10px;
     color: #000;
 
+}
+@media (max-width: 991px){
+    .section-2Flex{
+        width: 100% ;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    #name2{
+        width: 90%;
+        margin: 0 auto;
+        margin-bottom: 10px;
+        height: auto;
+    }
+    #name2 p{
+        font-size: 16px;
+    }
+    
 }
 .text-span {
     background-image: linear-gradient(90deg, var(--blue), var(--purple));
@@ -2748,8 +2766,14 @@ p {
     padding-top: 28px;
     padding-bottom: 28px;
     padding-left: 22px;
+    margin-top: 10px;
     font-size: 20px;
     font-weight: 600
+}
+.image2{
+    position: absolute;
+    top: 100px;
+    width: 100%;
 }
 
 .hero-form-field:focus-visible,
@@ -3902,7 +3926,7 @@ p {
 
     .hero-title {
         white-space: normal;
-        font-size: 51px
+        font-size: 42px
     }
 
     .text-span {
