@@ -2544,6 +2544,10 @@ p {
     line-height: 1.2em;
 }
          .section2{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
     width: 100%;
     height: auto;
     /* height: 100vh; */
@@ -2552,11 +2556,16 @@ p {
 .section-2Flex{
     padding-top: 50px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: 4vw;
     align-items: center;
     width: 100%;
     /* height: ; */
     position: relative;
+}
+.img-container{
+position: relative;
+top: -5vh;
 }
 #name2{
     height: 150px;
@@ -2585,6 +2594,10 @@ p {
 
 }
 @media (max-width: 991px){
+    .img-container{
+position: static;
+top: 0;
+}
     .section-2Flex{
         width: 100% ;
         align-items: center;
