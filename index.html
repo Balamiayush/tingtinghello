@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!-- Last Published: Thu Jul 10 2025 05:54:03 GMT+0000 (Coordinated Universal Time) -->
 <html
@@ -672,41 +673,19 @@
       src=" hello/67861d5e9350d5531cf78a3b/js/webflow.f68e86a0.b6ffcd7bf5614e6e.js"
       type="text/javascript"
     ></script>
-    <script src="@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-    <script>
- 
-      // LENIS SMOOTH SCROLL
-      let lenis;
-      //   if (Webflow.env("editor")) {
-      lenis = new Lenis({
-        lerp: 0.1,
-        wheelMultiplier: 0.6,
-        gestureOrientation: "vertical",
-        normalizeWheel: false,
-        smoothTouch: false,
-      });
-      function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
-      //   }
-      $("[data-lenis-start]").on("click", function () {
-        lenis.start();
-      });
-      $("[data-lenis-stop]").on("click", function () {
-        lenis.stop();
-      });
-      $("[data-lenis-toggle]").on("click", function () {
-        $(this).toggleClass("stop-scroll");
-        if ($(this).hasClass("stop-scroll")) {
-          lenis.stop();
-        } else {
-          lenis.start();
-        }
-      });
-    </script>
+  <script src="https://unpkg.com/lenis@1.3.8/dist/lenis.min.js"></script> 
+  <script>
+    // Initialize Lenis
+const lenis = new Lenis();
 
+// Use requestAnimationFrame to continuously update the scroll
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+
+requestAnimationFrame(raf);
+  </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/TextPlugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
@@ -817,60 +796,126 @@ https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js
         //ScrollTrigger.normalizeScroll(true);
       });
     </script>
-    <script>
-      var Webflow = Webflow || [];
-      var actionURL = "https://app.tingting.io/api/call-handler/";
+    
+    <!-- const DJANGO_BASE = "http://127.0.0.1:8000";  -->
+<script>
+  const apiAudio = "https://app.tingting.io/api/demo-audio-handler/";
+  const apiOTP = "https://app.tingting.io/api/demo-call-handler/";
 
-      function otpVerify() {
-        let otpInput = document.querySelector(".hero-form-field.otp-field");
-        otpInput.style.display = "block";
-        otpInput.setAttribute("required", true);
-        console.log("otp verified");
-      }
-      Webflow.push(function () {
-        // === Custom Form Handling ===
 
-        // unbind webflow form handling
-        $(document).off("submit");
+  const form = document.getElementById("wf-form-Hero-Form");
+  const otpField = document.getElementById("otp-2");
+  const successMsg = document.querySelector(".success-message");
+  const errorMsg = document.querySelector(".w-form-fail");
 
-        // new form handling
-        $("form").submit(function (evt) {
-          evt.preventDefault();
-          var form = $(this)[0];
-          var formData = new FormData(form);
-          document.querySelector(".w-form-done").style.display = "none";
-          document.querySelector(".w-form-fail").style.display = "none";
-          // 🔥 Remove empty fields
-          for (let [key, value] of formData.entries()) {
-            if (!value.trim()) {
-              // Check if the value is empty
-              formData.delete(key);
-            }
-          }
+  // Utility function to show messages
+  function showMessage(type, message) {
+    if (type === "success") {
+      successMsg.style.display = "block";
+      document.getElementById("done-message").innerText = message;
+      errorMsg.style.display = "none";
+    } else {
+      errorMsg.style.display = "block";
+      document.getElementById("error-message").innerText = message;
+      successMsg.style.display = "none";
+    }
+  }
 
-          fetch(actionURL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(Object.fromEntries(formData)),
-          })
-            .then((response) => response.json()) // Convert response to JSON
-            .then((data) => {
-              if (data.error) {
-                throw new Error(data.error); // Throw error if server returns an error message
-              }
-              document.querySelector(".w-form-done").style.display = "block";
-              document.querySelector("#done-message").innerHTML = data.message;
-              otpVerify();
-            })
-            .catch((error) => {
-              document.querySelector("#error-message").innerHTML =
-                error.message;
-              document.querySelector(".w-form-fail").style.display = "block";
-            });
-        });
+  // Function to send POST request
+  async function sendPost(url, data) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
-    </script>
+      return await res.json();
+    } catch (err) {
+      throw new Error("Network error");
+    }
+  }
+
+  // Handle Test Audio button
+  document.querySelector(".btn-test").addEventListener("click", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value.trim();
+    const number = document.getElementById("number-2").value.trim();
+    const peopleCount = parseInt(
+      document.querySelectorAll("#name")[1]?.value || 1
+    );
+
+    if (!name || !number) {
+      showMessage("error", "Please fill all required fields.");
+      return;
+    }
+
+    try {
+      await sendPost(apiAudio, {
+        name,
+        number,
+        people_count: peopleCount,
+      });
+      showMessage("success", "Audio test triggered successfully!");
+    } catch {
+      showMessage("error", "Failed to send audio test.");
+    }
+  });
+
+  // Handle Get a Call button (Request OTP)
+  document.querySelectorAll(".btn-gradient")[1].addEventListener("click", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value.trim();
+    const number = document.getElementById("number-2").value.trim();
+    const peopleCount = parseInt(
+      document.querySelectorAll("#name")[1]?.value || 1
+    );
+
+    if (!name || !number) {
+      showMessage("error", "Please fill all required fields.");
+      return;
+    }
+
+    try {
+      await sendPost(apiOTP, {
+        name,
+        number,
+        people_count: peopleCount,
+      });
+      otpField.style.display = "block";
+      otpField.required = true;
+      showMessage("success", "OTP sent. Please check your phone.");
+    } catch {
+      showMessage("error", "Failed to send OTP.");
+    }
+  });
+
+  // Handle OTP Submission
+  otpField.addEventListener("change", async () => {
+    const name = document.getElementById("name").value.trim();
+    const number = document.getElementById("number-2").value.trim();
+    const peopleCount = parseInt(
+      document.querySelectorAll("#name")[1]?.value || 1
+    );
+    const otp = otpField.value.trim();
+
+    if (!otp) {
+      showMessage("error", "Please enter the OTP.");
+      return;
+    }
+
+    try {
+      await sendPost(apiOTP, {
+        name,
+        number,
+        people_count: peopleCount,
+        otp: otp,
+      });
+      showMessage("success", "Call initiated successfully!");
+    } catch {
+      showMessage("error", "OTP verification failed.");
+    }
+  });
+</script>
+
   </body>
 </html>

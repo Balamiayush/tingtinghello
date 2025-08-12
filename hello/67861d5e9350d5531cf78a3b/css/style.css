@@ -2561,6 +2561,7 @@ p {
   overflow: hidden;
   line-height: 1.2em;
   background: transparent;
+  cursor: pointer;
 }
 .section2 {
   display: flex;
@@ -2589,6 +2590,7 @@ p {
 #name2 {
   height: 150px;
   overflow: hidden;
+
   width: 450px;
   background: transparent;
   color: #2b2c31;
